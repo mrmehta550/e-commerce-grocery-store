@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+    <!-- Start All Title Box -->
+    <div class="all-title-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>ABOUT US</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item active">ABOUT US</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End All Title Box -->
+
+    <!-- Start About Page  -->
+    <div class="about-box-main">
+        <div class="container">
+            <div class="row">
+				<div class="col-lg-6">
+                    <div class="banner-frame"> <img class="img-fluid" src="{{ about.image.url }}" alt="" />
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="noo-sh-title-top">{{ about.title }}</h2>
+                    <p>{{ about.description }}</p>
+					<a class="btn hvr-hover" href="#">Read More</a>
+                </div>
+            </div>
+            <div class="row my-5">
+                {% for ser in services %}
+                <div class="col-sm-6 col-lg-4">
+                    <div class="service-block-inner">
+                        <h3>{{ ser.title }}</h3>
+                        <p>{{ ser.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="row my-4">
+                <div class="col-12">
+                    <h2 class="noo-sh-title">Meet Our Team</h2>
+                </div>
+                {% for team in teams %}
+                <div class="col-sm-6 col-lg-3">
+                    <div class="hover-team">
+                        {% comment %} {% for team in teams %} {% endcomment %}
+                        <div class="our-team"> <img src="{{ team.image.url }}" alt="" />
+                            <div class="team-content">
+                                <h3 class="title">{{ team.name }}</h3> <span class="post">{{ team.role }}</span> </div>
+                            <ul class="social">
+                                <li>
+                                    <a href="#" class="fab fa-facebook"></a>
+                                </li>
+                                <li>
+                                    <a href="#" class="fab fa-twitter"></a>
+                                </li>
+                                <li>
+                                    <a href="#" class="fab fa-google-plus"></a>
+                                </li>
+                                <li>
+                                    <a href="#" class="fab fa-youtube"></a>
+                                </li>
+                            </ul>
+                            <div class="icon"> <i class="fa fa-plus" aria-hidden="true"></i> </div>
+                        </div>
+                        <div class="team-description">
+                            <p>{{ team.description }}</p>
+                        </div>
+                        <hr class="my-0"> </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+{% endblock  %}

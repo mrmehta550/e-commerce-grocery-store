@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+{% load static  %} 
+
+
+{% block content %}
+
+    <!-- Start Top Search -->
+    <div class="top-search">
+        <div class="container">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input type="text" class="form-control" placeholder="Search">
+                <span class="input-group-addon close-search"><i class="fa fa-times"></i></span>
+            </div>
+        </div>
+    </div>
+    <!-- End Top Search -->
+
+    <!-- Start Slider -->
+    <div id="slides-shop" class="cover-slides">
+        <ul class="slides-container">
+        {% for ban in banners %}
+            <li class="text-center">
+                <img src="{{ ban.image.url }}" alt="">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h1 class="m-b-20"><strong>Welcome To <br> Freshshop</strong></h1>
+                            <p class="m-b-40">See how your users experience your website in realtime or view <br> trends to see any changes in performance over time.</p>
+                            <p><a class="btn hvr-hover" href="{% url 'shop' %}">Shop New</a></p>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+            
+        </ul>
+        <div class="slides-navigation">
+            <a href="#" class="next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+            <a href="#" class="prev"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+        </div>
+    </div>
+    <!-- End Slider -->
+
+    <!-- Start Categories  -->
+    <div class="categories-shop">
+        <div class="container">
+            <div class="row">
+                {% for cat in categories %}
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="shop-cat-box">
+                        <img class="img-fluid" src="{{ cat.image.url }}" alt="{{ cat.name }}" />
+                        <a class="btn hvr-hover" href="#">{{ cat.button_text }}</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- End Categories -->
+	
+	<div class="box-add-products">
+    <div class="container">
+        <div class="row">
+
+            {% for sli in slider %}
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="offer-box-products">
+
+                    <img class="img-fluid" src="{{ sli.image.url }}" alt="Banner">
+
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+    <!-- Start Products  -->
+ <div class="products-box">
+    <div class="container">
+
+        <!-- Title -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="title-all text-center">
+                    <h1>Products</h1>
+                    <p>Explore our latest products</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="special-menu text-center">
+                    <div class="button-group filter-button-group">
+                        <button class="active" data-filter="*">All</button>
+                        <button data-filter=".top">Top Featured</button>
+                        <button data-filter=".best">Best Seller</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="row special-list">
+
+            {% for pro in products %}
+            <div class="col-lg-3 col-md-6 col-sm-6 special-grid {{ pro.tag }}">
+                <div class="products-single fix">
+
+                    <div class="box-img-hover">
+
+                        {% if pro.is_sale %}
+                        <div class="type-lb">
+                            <p class="sale">Sale</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Image -->
+                        <img src="{{ pro.image.url }}" class="img-fluid" alt="{{ pro.name }}">
+
+                        <!-- Hover -->
+                        <div class="mask-icon">
+                            <ul>
+                                <li><a href="#"><i class="fas fa-eye"></i></a></li>
+                                <li><a href="#"><i class="fas fa-sync-alt"></i></a></li>
+                                <li><a href="#"><i class="far fa-heart"></i></a></li>
+                            </ul>
+                            <a class="cart" href="#">Add to Cart</a>
+                        </div>
+
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="why-text">
+                        <h4>{{ pro.name }}</h4>
+                        <h5>₹ {{ pro.price }}</h5>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</div>
+    <!-- End Products  -->
+
+    <!-- Start Blog  -->
+  <div class="latest-blog">
+    <div class="container">
+
+        <!-- Title -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="title-all text-center">
+                    <h1>Latest Blog</h1>
+                    <p>Explore our latest articles</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="row">
+
+            {% for blog in blogs %}
+            <div class="col-md-6 col-lg-4 col-xl-4">
+                <div class="blog-box">
+
+                    <!-- Image -->
+                    <div class="blog-img" style="text-align: center;">
+                        <img class="img-fluid" src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                    </div>
+
+                    <!-- Content -->
+                    <div class="blog-content">
+                        <div class="title-blog">
+                            <h3>{{ blog.title }}</h3>
+                            <p>{{ blog.description|truncatewords:20 }}</p>
+                        </div>
+
+                        <ul class="option-blog">
+                            <li><a href="#"><i class="far fa-heart"></i></a></li>
+                            <li><a href="#"><i class="fas fa-eye"></i></a></li>
+                            <li><a href="#"><i class="far fa-comments"></i></a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</div>
+    <!-- End Blog  -->
+
+
+    <!-- Start Instagram Feed  -->
+    <div class="instagram-box">
+        <div class="main-instagram owl-carousel owl-theme">
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-01.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-02.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-03.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-04.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-05.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-06.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-07.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-08.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-09.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ins-inner-box">
+                    <img src="images/instagram-img-05.jpg" alt="" />
+                    <div class="hov-in">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="all-title-box">
+    <div class="container">
+        <h2>🛒 Your Cart</h2>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5">
+
+{% if cart.items.all %}
+
+<div class="row">
+
+    <!-- 🔥 CART ITEMS -->
+    <div class="col-lg-8">
+
+        {% for item in cart.items.all %}
+        <div class="card mb-3 shadow-sm p-3">
+
+            <div class="row align-items-center">
+
+                <!-- IMAGE -->
+                <div class="col-md-2">
+                    <img src="{{ item.product.image.url }}" class="img-fluid rounded">
+                </div>
+
+                <!-- NAME -->
+                <div class="col-md-3">
+                    <h5>{{ item.product.name }}</h5>
+                </div>
+
+                <!-- PRICE -->
+                <div class="col-md-2">
+                    <strong>$ {{ item.product.price }}</strong>
+                </div>
+
+                <!-- QUANTITY -->
+                <div class="col-md-3">
+
+                    <form method="POST" action="{% url 'update_cart' item.id %}">
+                        {% csrf_token %}
+
+                        <div class="d-flex">
+
+                            <input type="number" 
+                                   name="quantity" 
+                                   value="{{ item.quantity }}" 
+                                   min="1"
+                                   class="form-control mr-2">
+
+                            <button class="btn btn-outline-primary">
+                                Update
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <!-- TOTAL -->
+                <div class="col-md-1">
+                    ${{ item.total_price }}
+                </div>
+
+                <!-- REMOVE -->
+                <div class="col-md-1 text-right">
+                    <a href="{% url 'remove_from_cart' item.id %}" class="text-danger">
+                        ❌
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+        <!-- CONTINUE SHOPPING -->
+        <a href="{% url 'shop' %}" class="btn btn-outline-secondary mt-3">
+            ← Continue Shopping
+        </a>
+
+    </div>
+
+    <!-- 🔥 ORDER SUMMARY -->
+    <div class="col-lg-4">
+
+        <div class="card shadow-sm p-4">
+
+            <h4 class="mb-3">Order Summary</h4>
+
+            <div class="d-flex mb-2">
+                <span>Subtotal</span>
+                <span class="ml-auto">$ {{ subtotal }}</span>
+            </div>
+
+            <div class="d-flex mb-2">
+                <span>Shipping</span>
+                <span class="ml-auto text-success">Free</span>
+            </div>
+
+            <div class="d-flex mb-2">
+                <span>Tax (5%)</span>
+                <span class="ml-auto">$ {{ subtotal }}</span>
+            </div>
+
+            <hr>
+
+            <div class="d-flex font-weight-bold">
+                <span>Total</span>
+                <span class="ml-auto">$ {{ subtotal }}</span>
+            </div>
+
+            <hr>
+
+            <!-- 🔥 CHECKOUT BUTTON -->
+            <a href="{% url 'checkout' %}" class="btn btn-success btn-lg btn-block">
+                🛍 Proceed to Checkout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<!-- 🔥 EMPTY CART -->
+<div class="text-center mt-5">
+    <h3>Your Cart is Empty 😢</h3>
+    <p>Add some products to continue</p>
+
+    <a href="{% url 'shop' %}" class="btn btn-primary">
+        Shop Now
+    </a>
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}
