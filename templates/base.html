@@ -4,6 +4,10 @@
 <head>
     <title>{% block title %}Freshshop{% endblock %}</title>
 
+    <!-- 🔥 IMPORTANT META TAGS -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -23,7 +27,7 @@
 <!-- FOOTER -->
 {% include 'components/footer.html' %}
 
-<!-- JS (ONLY ONCE) -->
+<!-- JS -->
 <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>

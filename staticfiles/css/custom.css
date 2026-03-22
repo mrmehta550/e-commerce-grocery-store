@@ -1,0 +1,98 @@
+/* 🔥 GLOBAL RESET */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f8f9fa;
+}
+
+/* TOP BAR */
+.top-bar {
+    background: #28a745;
+    color: white;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+/* NAVBAR */
+.navbar {
+    border-radius: 10px;
+}
+
+/* SLIDER */
+.cover-slides img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* BUTTON */
+.btn {
+    border-radius: 25px;
+}
+
+/* CATEGORY BOX */
+.shop-cat-box {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+.shop-cat-box:hover {
+    transform: scale(1.03);
+}
+
+/* PRODUCT CARD */
+.products-single {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    transition: 0.3s;
+}
+.products-single:hover {
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+/* PRODUCT IMAGE */
+.products-single img {
+    border-radius: 10px;
+}
+
+/* PRODUCT TEXT */
+.why-text {
+    text-align: center;
+}
+
+/* BLOG */
+.blog-box {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+
+    .cover-slides img {
+        height: 200px;
+    }
+
+    .top-bar {
+        text-align: center;
+    }
+
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .btn {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+
+#basic {
+    color: black !important;
+}
+
+#basic option {
+    color: black !important;
+}
