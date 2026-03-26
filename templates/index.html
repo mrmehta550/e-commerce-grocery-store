@@ -1,201 +1,361 @@
 {% extends "base.html" %}
-{% load static  %} 
+{% load static %}
 
+{% block extra_css %}
+<style>
+    /* Modern Global Refinements */
+    :root {
+        --primary: #22c55e;
+        --dark: #1e293b;
+        --glass: rgba(255, 255, 255, 0.8);
+        --light-bg: #f8fafc;
+    }
+
+    /* Existing Styles Refined */
+    .top-search { background: var(--dark); padding: 15px 0; }
+    .top-search .form-control { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 30px; }
+    
+    .cover-slides h1 { font-size: 3.5rem; text-shadow: 2px 4px 10px rgba(0,0,0,0.3); }
+    .btn.hvr-hover { background: var(--primary); color: white; padding: 12px 35px; border-radius: 50px; font-weight: 700; transition: transform 0.3s; }
+    .btn.hvr-hover:hover { transform: scale(1.05); background: #16a34a; }
+
+    /* New Feature: Service Highlights */
+    .services-bar { 
+        padding: 80px 0; 
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); 
+        border-bottom: 1px solid #e5e7eb; 
+        position: relative;
+        overflow: hidden;
+    }
+    .services-bar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23e5e7eb" opacity="0.1"/></svg>') repeat;
+        opacity: 0.3;
+    }
+    .service-item { 
+        text-align: center; 
+        padding: 30px 20px; 
+        background: white; 
+        border-radius: 16px; 
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08); 
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        position: relative;
+        z-index: 1;
+        margin-bottom: 20px;
+    }
+    .service-item:hover { 
+        transform: translateY(-8px) scale(1.02); 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    }
+    .service-item i { 
+        font-size: 50px; 
+        color: var(--primary); 
+        margin-bottom: 20px; 
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+    .service-item:hover i { 
+        transform: scale(1.1) rotate(5deg); 
+        color: #16a34a; 
+    }
+    .service-item h4 { 
+        font-weight: 800; 
+        margin-bottom: 12px; 
+        color: var(--dark); 
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .service-item p { 
+        color: #64748b; 
+        font-size: 0.95rem; 
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    /* Product Grid */
+    .products-single { border-radius: 15px; overflow: hidden; background: white; border: 1px solid #f1f5f9; transition: 0.3s; }
+    .products-single:hover { box-shadow: 0 20px 30px rgba(0,0,0,0.1); transform: translateY(-10px); }
+    .why-text { padding: 20px !important; text-align: center; }
+
+    /* Uniform and responsive image cards */
+    .shop-cat-box, .products-single .box-img-hover {
+        min-height: 240px;
+        max-height: 260px;
+        position: relative;
+    }
+    .shop-cat-box img, .products-single .box-img-hover img, .cover-slides li img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .shop-cat-box .btn, .products-single .why-text {
+        min-height: 60px;
+    }
+
+    /* Hero text readability */
+    .cover-slides .text-center h1 {
+        text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        font-size: clamp(2.4rem, 5vw, 4rem);
+    }
+    .cover-slides .text-center p {
+        font-size: clamp(1rem, 2.1vw, 1.25rem);
+        text-shadow: 0 2px 15px rgba(0,0,0,0.6);
+    }
+
+    /* Category card spacing */
+    .categories-shop .shop-cat-box {
+        overflow: hidden;
+        border-radius: 14px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 7px 18px rgba(0,0,0,0.08);
+    }
+
+    /* Full width button appearance */
+    .shop-cat-box .btn, .products-single .mask-icon .cart {
+        background: var(--primary) !important;
+        border-radius: 0;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    /* Small-screen adjustments */
+    @media (max-width: 991px) {
+        .services-bar .service-item { margin-bottom: 16px; }
+        .shop-cat-box, .products-single .box-img-hover { min-height: 220px; }
+    }
+
+    /* Mobile navbar fixes */
+    @media (max-width: 767px) {
+        .main-header .container { padding: 0 15px; }
+        .main-header .d-flex { flex-direction: column; align-items: stretch !important; }
+        .main-header form { width: 100% !important; max-width: none !important; margin: 8px 0; }
+        .main-header .input-group { flex-wrap: wrap; }
+        .main-header select { max-width: none; margin-bottom: 5px; }
+        .main-header .d-flex.align-items-center { justify-content: space-between; margin-top: 8px; }
+        .main-header .dropdown-toggle { font-size: 14px; }
+        .cover-slides .text-center { padding: 20px; }
+        .services-bar .row { --bs-gutter-x: 15px; }
+        .categories-shop .row { --bs-gutter-x: 15px; }
+        .products-box .row { --bs-gutter-x: 10px; }
+        .newsletter-section { padding: 60px 0; }
+        .newsletter-form { flex-direction: column; gap: 15px; }
+    }
+
+
+    /* New Feature: Modern Newsletter */
+    .newsletter-section { 
+        background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        padding: 100px 0;
+        color: white;
+        text-align: center;
+    }
+    .newsletter-form { max-width: 600px; margin: 30px auto; display: flex; gap: 10px; }
+    .newsletter-form input { 
+        flex: 1; border-radius: 50px; padding: 15px 25px; border: none; font-size: 1rem;
+    }
+    .newsletter-form button { 
+        border-radius: 50px; padding: 0 30px; border: none; background: var(--primary); color: white; font-weight: 700; 
+    }
+
+    .title-all h1 { font-weight: 800; text-transform: uppercase; position: relative; display: inline-block; padding-bottom: 10px; }
+    .title-all h1::after { content: ''; position: absolute; width: 60px; height: 4px; background: var(--primary); bottom: 0; left: 50%; transform: translateX(-50%); }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+   /* SERVICES SECTION */
+.services-bar {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #f8fafc, #e2fbe8);
+}
+
+/* CARD */
+.service-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+    transition: 0.3s;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* HOVER EFFECT */
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+}
+
+/* ICON */
+.icon-box {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.icon-box i {
+    color: white;
+    font-size: 28px;
+}
+
+/* TEXT */
+.service-card h4 {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.service-card p {
+    color: #64748b;
+    font-size: 14px;
+}
+</style>
+{% endblock %}
 
 {% block content %}
-
-    <!-- Start Top Search -->
     <div class="top-search">
         <div class="container">
             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                <input type="text" class="form-control" placeholder="Search">
-                <span class="input-group-addon close-search"><i class="fa fa-times"></i></span>
+                <span class="input-group-addon" style="background:transparent; border:none; color:white;"><i class="fa fa-search"></i></span>
+                <form method="GET" action="{% url 'shop' %}" style="width: 100%;">
+                    <input type="text" class="form-control" placeholder="Search for fresh vegetables, fruits..." name="q">
+                </form>
             </div>
         </div>
     </div>
-    <!-- End Top Search -->
 
-    <!-- Start Slider -->
     <div id="slides-shop" class="cover-slides">
         <ul class="slides-container">
         {% for ban in banners %}
             <li class="text-center">
-                <img src="{{ ban.image.url }}" alt="">
+                {% if ban.image %}
+                <img src="{{ ban.image.url }}" alt="Banner">
+                {% endif %}
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
-                            <h1 class="m-b-20"><strong>Welcome To <br> Freshshop</strong></h1>
-                            <p class="m-b-40">See how your users experience your website in realtime or view <br> trends to see any changes in performance over time.</p>
-                            <p><a class="btn hvr-hover" href="{% url 'shop' %}">Shop New</a></p>
+                            <h1 class="m-b-20"><strong>Organically Grown <br> For Your Health</strong></h1>
+                            <p class="m-b-40">Directly from our local farms to your kitchen. Quality you can taste.</p>
+                            <p><a class="btn hvr-hover" href="{% url 'shop' %}">Shop Now</a></p>
                         </div>
                     </div>
                 </div>
             </li>
         {% endfor %}
-            
         </ul>
-        <div class="slides-navigation">
-            <a href="#" class="next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
-            <a href="#" class="prev"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+    </div>
+
+   <div class="services-bar">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-card">
+                    <div class="icon-box">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h4>Free Delivery</h4>
+                    <p>On all orders above ₹500</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-card">
+                    <div class="icon-box">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4>100% Organic</h4>
+                    <p>Certified farm fresh produce</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-card">
+                    <div class="icon-box">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h4>Secure Payment</h4>
+                    <p>100% safe & secure checkout</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-card">
+                    <div class="icon-box">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h4>Easy Returns</h4>
+                    <p>7-day hassle-free returns</p>
+                </div>
+            </div>
+
         </div>
     </div>
-    <!-- End Slider -->
+</div>
 
-    <!-- Start Categories  -->
-    <div class="categories-shop">
+    <div class="categories-shop" style="padding: 80px 0;">
         <div class="container">
+            <div class="title-all text-center">
+                <h1>Our Categories</h1>
+            </div>
             <div class="row">
                 {% for cat in categories %}
-                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-4 col-md-4">
                     <div class="shop-cat-box">
+                        {% if cat.image %}
                         <img class="img-fluid" src="{{ cat.image.url }}" alt="{{ cat.name }}" />
-                        <a class="btn hvr-hover" href="#">{{ cat.button_text }}</a>
+                        {% endif %}
+                        <a class="btn hvr-hover" href="{% url 'shop' %}?category={{ cat.id }}">{{ cat.button_text|default:"Shop Now" }}</a>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-    <!-- End Categories -->
-	
-	<div class="box-add-products">
-    <div class="container">
-        <div class="row">
 
-            {% for sli in slider %}
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <div class="offer-box-products">
-
-                    <img class="img-fluid" src="{{ sli.image.url }}" alt="Banner">
-
-                </div>
+    <div class="products-box" style="background: var(--light-bg); padding: 80px 0;">
+        <div class="container">
+            <div class="title-all text-center">
+                <h1>Handpicked for You</h1>
+                <p>Explore our best-selling organic selection</p>
             </div>
-            {% endfor %}
-
+            <div class="row special-list">
+                {% for pro in products %}
+                <div class="col-lg-3 col-md-6 special-grid {{ pro.tag }}">
+                    <div class="products-single fix">
+                        <div class="box-img-hover">
+                            <img src="{{ pro.image.url }}" class="img-fluid" alt="{{ pro.name }}">
+                            <div class="mask-icon">
+                                <ul>
+                                    <li><a href="{% url 'product_detail' pro.id %}" title="View"><i class="fas fa-eye"></i></a></li>
+                                    <li><a href="#" title="Wishlist"><i class="far fa-heart"></i></a></li>
+                                </ul>
+                                <a class="cart" href="{% url 'add_to_cart' pro.id %}">Add to Cart</a>
+                            </div>
+                        </div>
+                        <div class="why-text">
+                            <h4>{{ pro.name }}</h4>
+                            <h5>₹ {{ pro.price }}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-</div>
 
-    <!-- Start Products  -->
- <div class="products-box">
-    <div class="container">
-
-        <!-- Title -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="title-all text-center">
-                    <h1>Products</h1>
-                    <p>Explore our latest products</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Filter -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="special-menu text-center">
-                    <div class="button-group filter-button-group">
-                        <button class="active" data-filter="*">All</button>
-                        <button data-filter=".top">Top Featured</button>
-                        <button data-filter=".best">Best Seller</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Products Grid -->
-        <div class="row special-list">
-
-            {% for pro in products %}
-            <div class="col-lg-3 col-md-6 col-sm-6 special-grid {{ pro.tag }}">
-                <div class="products-single fix">
-
-                    <div class="box-img-hover">
-
-                        {% if pro.is_sale %}
-                        <div class="type-lb">
-                            <p class="sale">Sale</p>
-                        </div>
-                        {% endif %}
-
-                        <!-- Image -->
-                        <img src="{{ pro.image.url }}" class="img-fluid" alt="{{ pro.name }}">
-
-                        <!-- Hover -->
-                        <div class="mask-icon">
-                            <ul>
-                                <li><a href="#"><i class="fas fa-eye"></i></a></li>
-                                <li><a href="#"><i class="fas fa-sync-alt"></i></a></li>
-                                <li><a href="#"><i class="far fa-heart"></i></a></li>
-                            </ul>
-                            <a class="cart" href="#">Add to Cart</a>
-                        </div>
-
-                    </div>
-
-                    <!-- Product Info -->
-                    <div class="why-text">
-                        <h4>{{ pro.name }}</h4>
-                        <h5>₹ {{ pro.price }}</h5>
-                    </div>
-
-                </div>
-            </div>
-            {% endfor %}
-
-        </div>
-
-    </div>
-</div>
-    <!-- End Products  -->
-
-    <!-- Start Blog  -->
-  <div class="latest-blog">
-    <div class="container">
-
-        <!-- Title -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="title-all text-center">
-                    <h1>Latest Blog</h1>
-                    <p>Explore our latest articles</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Blog Grid -->
-        <div class="row">
-
-            {% for blog in blogs %}
-            <div class="col-md-6 col-lg-4 col-xl-4">
-                <div class="blog-box">
-
-                    <!-- Image -->
-                    <div class="blog-img" style="text-align: center;">
-                        <img class="img-fluid" src="{{ blog.image.url }}" alt="{{ blog.title }}">
-                    </div>
-
-                    <!-- Content -->
-                    <div class="blog-content">
-                        <div class="title-blog">
-                            <h3>{{ blog.title }}</h3>
-                            <p>{{ blog.description|truncatewords:20 }}</p>
-                        </div>
-
-                        <ul class="option-blog">
-                            <li><a href="#"><i class="far fa-heart"></i></a></li>
-                            <li><a href="#"><i class="fas fa-eye"></i></a></li>
-                            <li><a href="#"><i class="far fa-comments"></i></a></li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-            {% endfor %}
-
-        </div>
-
-    </div>
-</div>
 {% endblock %}

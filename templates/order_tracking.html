@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5 mb-5">
+
+    <h2 class="mb-4">📦 Track Your Order</h2>
+
+    <!-- ORDER INFO -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h5>Order #{{ order.id }}</h5>
+        <p class="text-muted">Placed on {{ order.created_at }}</p>
+        <h4 class="text-success">₹ {{ order.total_price }}</h4>
+    </div>
+
+    <!-- 🔥 STATUS PROGRESS BAR -->
+    <div class="card shadow-sm p-4 mb-4">
+
+        <div class="d-flex justify-content-between text-center">
+
+            {% for step in steps %}
+                <div style="flex:1; position:relative;">
+
+                    <!-- LINE -->
+                    {% if not forloop.last %}
+                        <div style="
+                            position:absolute;
+                            top:15px;
+                            left:50%;
+                            width:100%;
+                            height:3px;
+                            background:{% if forloop.counter0 <= current_index %}green{% else %}#ccc{% endif %};
+                            z-index:0;">
+                        </div>
+                    {% endif %}
+
+                    <!-- CIRCLE -->
+                    <div style="
+                        width:30px;
+                        height:30px;
+                        border-radius:50%;
+                        margin:auto;
+                        background:{% if forloop.counter0 <= current_index %}green{% else %}#ccc{% endif %};
+                        color:white;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        z-index:1;">
+                        {% if forloop.counter0 <= current_index %}
+                            ✔
+                        {% else %}
+                            {{ forloop.counter }}
+                        {% endif %}
+                    </div>
+
+                    <!-- LABEL -->
+                    <p class="mt-2 text-capitalize">
+                        {{ step }}
+                    </p>
+
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- 🔥 ORDER ITEMS -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h5>Items</h5>
+
+        {% for item in order.items.all %}
+            <div class="d-flex mb-2">
+                <div>
+                    <strong>{{ item.product.name }}</strong><br>
+                    <small>Qty: {{ item.quantity }}</small>
+                </div>
+                <div class="ml-auto">
+                    ₹ {{ item.price }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- 🔥 DELIVERY INFO -->
+    <div class="card shadow-sm p-4">
+        <h5>Delivery Address</h5>
+        <p>
+            {{ order.address }} <br>
+            {{ order.city }}, {{ order.state }} - {{ order.zip }}
+        </p>
+    </div>
+
+</div>
+
+{% endblock %} 

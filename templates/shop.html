@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+    /* Mobile shop adjustments */
+    @media (max-width: 991px) {
+        .sidebar-shop-left { order: 2; margin-top: 30px; }
+        .shop-content-right { order: 1; }
+        .product-categori { margin-bottom: 20px; }
+        .toolbar-sorter-right { justify-content: center; margin-bottom: 20px; }
+    }
+    @media (max-width: 767px) {
+        .special-list .col-lg-3 { flex: 0 0 50%; max-width: 50%; }
+        .filter-button-group button { font-size: 12px; padding: 8px 12px; margin: 2px; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <!-- Start All Title Box -->
@@ -22,7 +38,9 @@
                 <div class="product-categori">
                     <div class="search-product">
                         <form method="GET">
-                            <input class="form-control" placeholder="Search here..." type="text" name="q">
+                            <input class="form-control" placeholder="Search here..." type="text" name="q" value="{{ request.GET.q|default_if_none:'' }}">
+                            {% if request.GET.category %}<input type="hidden" name="category" value="{{ request.GET.category }}">{% endif %}
+                            {% if request.GET.tag %}<input type="hidden" name="tag" value="{{ request.GET.tag }}">{% endif %}
                         </form>
                     </div>
 
@@ -33,16 +51,22 @@
 
                         <ul>
                             <li>
-                                <a href="{% url 'shop' %}">All</a>
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&amp;{% endif %}{% if request.GET.tag %}tag={{ request.GET.tag }}&amp;{% endif %}">All</a>
                             </li>
 
                             {% for cat in categories %}
                             <li>
-                                <a href="?category={{ cat.id }}">
+                                <a href="?category={{ cat.id }}{% if request.GET.tag %}&amp;tag={{ request.GET.tag }}{% endif %}{% if request.GET.q %}&amp;q={{ request.GET.q }}{% endif %}">
                                     {{ cat.name }}
                                 </a>
                             </li>
                             {% endfor %}
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" href="{% url 'provider_dashboard' %}">Provider Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" href="{% url 'add_product' %}">Add Product</a>
+                            </li>
                         </ul>
                     </div>
 
@@ -53,8 +77,8 @@
                         </div>
 
                         <ul>
-                            <li><a href="?tag=top">Top Featured</a></li>
-                            <li><a href="?tag=best">Best Seller</a></li>
+                            <li><a href="?tag=top{% if request.GET.category %}&amp;category={{ request.GET.category }}{% endif %}{% if request.GET.q %}&amp;q={{ request.GET.q }}{% endif %}">Top Featured</a></li>
+                            <li><a href="?tag=best{% if request.GET.category %}&amp;category={{ request.GET.category }}{% endif %}{% if request.GET.q %}&amp;q={{ request.GET.q }}{% endif %}">Best Seller</a></li>
                         </ul>
                     </div>
 
@@ -123,14 +147,20 @@
                     <!-- 🔥 PAGINATION -->
                     <div class="pagination text-center mt-4">
 
+                        {% with extra_params="" %}
+                            {% if request.GET.q %}{% with extra_params=extra_params|stringformat:"s"|add:"q="|add:request.GET.q|add:"&" %}{% endwith %}{% endif %}
+                            {% if request.GET.category %}{% with extra_params=extra_params|stringformat:"s"|add:"category="|add:request.GET.category|add:"&" %}{% endwith %}{% endif %}
+                            {% if request.GET.tag %}{% with extra_params=extra_params|stringformat:"s"|add:"tag="|add:request.GET.tag|add:"&" %}{% endwith %}{% endif %}
+                        {% endwith %}
+
                         {% if page_obj.has_previous %}
-                        <a href="?page={{ page_obj.previous_page_number }}">Prev</a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&amp;{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&amp;{% endif %}{% if request.GET.tag %}tag={{ request.GET.tag }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Prev</a>
                         {% endif %}
 
                         <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
 
                         {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&amp;{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&amp;{% endif %}{% if request.GET.tag %}tag={{ request.GET.tag }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next</a>
                         {% endif %}
 
                     </div>

@@ -1,17 +1,132 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
+<style>
+  body {
+    background: #f4f6f9;
+  }
 
-<div class="container mt-5">
-    <h2>Login</h2>
+  .auth-wrapper {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form|crispy }}
+  .auth-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: 0.3s;
+  }
 
-        <button class="btn btn-success mt-3">Login</button>
+  .auth-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .auth-card h2 {
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .auth-subtitle {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 25px;
+  }
+
+  .btn-auth {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .btn-auth:hover {
+    background: #198754;
+    transform: scale(1.02);
+  }
+
+  .auth-footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .auth-footer a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .auth-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .divider {
+    text-align: center;
+    margin: 20px 0;
+    color: #aaa;
+    font-size: 13px;
+  }
+
+</style>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <h2>🔐 Login</h2>
+    <p class="auth-subtitle">Welcome back! Please login to continue</p>
+
+    <form method="POST" novalidate>
+      {% csrf_token %}
+
+      {{ form|crispy }}
+
+      <input type="hidden" name="next" value="{{ next }}" />
+
+      <!-- Optional: Remember me -->
+      <div class="form-check mt-2">
+        <input class="form-check-input" type="checkbox" id="remember">
+        <label class="form-check-label" for="remember">
+          Remember me
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-success btn-auth mt-3">
+        Login Now →
+      </button>
+
+      <div class="divider">or</div>
+
+      <!-- Social login placeholder -->
+      <button type="button" class="btn btn-outline-dark w-100 mb-2">
+        Continue with Google
+      </button>
+
+      <button type="button" class="btn btn-outline-primary w-100">
+        Continue with Facebook
+      </button>
+
     </form>
+
+    <div class="auth-footer">
+      <p>
+        Don't have an account?
+        <a href="{% url 'register' %}">Create one</a>
+      </p>
+
+      <p>
+        <a href="#">Forgot password?</a>
+      </p>
+    </div>
+
+  </div>
 </div>
 
 {% endblock %}

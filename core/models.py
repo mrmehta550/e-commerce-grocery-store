@@ -2,8 +2,12 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 class NavbarCategory(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
+    category = models.OneToOneField('products.Category', on_delete=models.CASCADE, related_name='navbar_item', null=True, blank=True)
+    position = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['position']
+        verbose_name_plural = "Navbar Categories"
 
     def clean(self):
         # 🔥 Restrict max 5 categories
@@ -15,7 +19,7 @@ class NavbarCategory(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return f"Navbar - {self.category.name}"
     
 class BusinessHour(models.Model):
     day = models.CharField(max_length=50)
@@ -49,33 +53,7 @@ class Newsletter(models.Model):
     def __str__(self):
         return self.email
  
-class Category(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='categories/')
-    button_text = models.CharField(max_length=100, default="Shop Now")
-
-    def __str__(self):
-        return self.name
-       
-class Product(models.Model):
-    CATEGORY_CHOICES = [
-        ('top', 'Top Featured'),
-        ('best', 'Best Seller'),
-        ('normal', 'Normal'),
-    ]
-
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.ImageField(upload_to='products/')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-    tag = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='normal')
-    is_sale = models.BooleanField(default=False)
-    is_new = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
+# Note: Category and Product models moved to products.models to avoid duplication
 
 
 # 🔹 Slider

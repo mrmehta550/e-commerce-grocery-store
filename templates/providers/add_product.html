@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* --- Form Page Core Styles --- */
+    body { background-color: #f4f7f6; }
+    .add-product-wrapper { padding: 60px 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 75vh; }
+    
+    /* Card Styling */
+    .form-card { background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; border-top: 5px solid #000; }
+    .form-header { background: #fafafa; padding: 30px; border-bottom: 1px solid #eee; text-align: center; }
+    .form-header h2 { margin: 0 0 10px; font-weight: 700; color: #333; font-size: 26px; }
+    .form-header p { color: #777; margin: 0; font-size: 15px; }
+    .form-body { padding: 40px 30px; }
+    
+    /* Input Field Styling */
+    .form-label { font-weight: 600; color: #444; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .pro-input { border-radius: 0 5px 5px 0; border-left: none; box-shadow: none !important; border-color: #ddd; height: 50px; }
+    .pro-input:focus { border-color: #b0d12b; }
+    .pro-icon-box { border-radius: 5px 0 0 5px; background-color: #fff; border: 1px solid #ddd; border-right: none; color: #aaa; width: 45px; display: flex; justify-content: center; align-items: center; }
+    
+    /* Input Group Focus State */
+    .input-group:focus-within .pro-icon-box, 
+    .input-group:focus-within .pro-input { border-color: #b0d12b; }
+    .input-group:focus-within .pro-icon-box { color: #b0d12b; }
+
+    /* Buttons */
+    .btn-save { background-color: #b0d12b; color: #000; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 12px 30px; border: none; transition: all 0.3s; }
+    .btn-save:hover { background-color: #000; color: #fff; }
+    .btn-cancel { background-color: #f8f9fa; color: #555; font-weight: 600; border: 1px solid #ddd; padding: 12px 20px; transition: all 0.3s; }
+    .btn-cancel:hover { background-color: #e2e6ea; color: #333; }
+</style>
+
+<div class="add-product-wrapper d-flex align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2><i class="fas fa-box-open mr-2" style="color: #b0d12b;"></i> Add New Product</h2>
+                        <p>Fill in the details below to add a new item to your store inventory.</p>
+                    </div>
+                    
+                    <div class="form-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+
+                            <div class="form-group mb-4">
+                                <label class="form-label">Product Name</label>
+                                <div class="input-group">
+                                    <div class="pro-icon-box">
+                                        <i class="fas fa-tag"></i>
+                                    </div>
+                                    <input type="text" name="name" class="form-control pro-input" placeholder="e.g., Fresh Organic Apples" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-5">
+                                <label class="form-label">Price</label>
+                                <div class="input-group">
+                                    <div class="pro-icon-box">
+                                        <i class="fas fa-rupee-sign"></i>
+                                    </div>
+                                    <input type="number" name="price" class="form-control pro-input" placeholder="0.00" min="0" step="0.01" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-5">
+                                <label class="form-label">Category</label>
+                                <select name="category" class="form-control pro-input" required>
+                                    <option value="">Select category</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group mb-5">
+                                <label class="form-label">Product Description</label>
+                                <textarea name="description" class="form-control pro-input" rows="4" placeholder="Describe your product" required></textarea>
+                            </div>
+
+                            <div class="form-group mb-5">
+                                <label class="form-label">Product Image</label>
+                                <input type="file" name="image" class="form-control pro-input" accept="image/*" required>
+                            </div>
+
+                            <hr class="mb-4">
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{% url 'provider_dashboard' %}" class="btn btn-cancel rounded">
+                                    <i class="fas fa-arrow-left mr-1"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-save rounded shadow-sm">
+                                    <i class="fas fa-check mr-1"></i> Save Product
+                                </button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

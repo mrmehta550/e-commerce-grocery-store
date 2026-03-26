@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bg-body: #f8fafc;
+        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --accent-blue: #3b82f6;
+        --accent-orange: #f59e0b;
+        --accent-green: #10b981;
+    }
+
+    .orders-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .page-title {
+        font-size: 1.875rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* Provider Order Card */
+    .provider-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 24px;
+        overflow: hidden;
+        transition: transform 0.2s ease;
+    }
+
+    .card-main-info {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        align-items: center;
+        background: #fff;
+    }
+
+    .order-meta h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #1e293b;
+    }
+
+    .order-date {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .order-value {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 1.1rem;
+    }
+
+    /* Items Section - Nested Table */
+    .items-dropdown {
+        background: #f1f5f9;
+        padding: 15px 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    .items-table th {
+        text-align: left;
+        color: #64748b;
+        padding-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .items-table td {
+        padding: 8px 0;
+        color: #334155;
+    }
+
+    /* Provider Action Buttons */
+    .action-zone {
+        padding: 15px 20px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+        color: white;
+    }
+
+    .btn-pack { background: var(--accent-blue); }
+    .btn-pack:hover { background: #2563eb; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+
+    .btn-ship { background: var(--accent-orange); }
+    .btn-ship:hover { background: #d97706; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+
+    .btn-deliver { background: var(--accent-green); }
+    .btn-deliver:hover { background: #059669; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+
+    .status-done {
+        color: var(--accent-green);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .card-main-info {
+            grid-template-columns: 1fr;
+            gap: 15px;
+            text-align: center;
+        }
+        .action-zone { justify-content: center; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="orders-container">
+    <h2 class="page-title">
+        📦 My Orders 
+        <span style="font-size: 0.9rem; font-weight: 400; color: #64748b;">(Manage fulfillment)</span>
+    </h2>
+
+    {% for order in orders %}
+        <div class="provider-card">
+            <div class="card-main-info">
+                <div class="order-meta">
+                    <span class="order-date">{{ order.created_at|date:"M d, Y • H:i" }}</span>
+                    <h3>Order ID: #{{ order.id }}</h3>
+                </div>
+                
+                <div class="order-value text-center">
+                    <span style="font-size: 0.8rem; font-weight: 400; color: #64748b; display: block;">Total Revenue</span>
+                    ₹{{ order.total_price }}
+                </div>
+
+                <div class="order-status-tag">
+                     <span class="status-badge 
+                        {% if order.status == 'delivered' %}status-delivered
+                        {% elif order.status == 'shipped' %}status-shipped
+                        {% else %}status-processing{% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="items-dropdown">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td><strong>{{ item.product.name }}</strong></td>
+                            <td>x{{ item.quantity }}</td>
+                            <td>₹{{ item.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if user.role == "provider" %}
+            <div class="action-zone">
+                {% if order.status == "placed" %}
+                    <a href="{% url 'update_order_status' order.id 'packed' %}" class="btn-action btn-pack">
+                        Mark as Packed
+                    </a>
+
+                {% elif order.status == "packed" %}
+                    <a href="{% url 'update_order_status' order.id 'shipped' %}" class="btn-action btn-ship">
+                        Mark as Shipped
+                    </a>
+
+                {% elif order.status == "shipped" %}
+                    <a href="{% url 'update_order_status' order.id 'delivered' %}" class="btn-action btn-deliver">
+                        Mark as Delivered
+                    </a>
+
+                {% elif order.status == "delivered" %}
+                    <span class="status-done">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        Order Completed
+                    </span>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    {% empty %}
+        <div style="text-align: center; padding: 100px 0;">
+            <p style="color: #64748b; font-size: 1.2rem;">No orders to display yet.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

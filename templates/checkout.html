@@ -1,164 +1,187 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
-
-<div class="all-title-box">
+  <!-- 🔥 PAGE TITLE -->
+  <div class="all-title-box">
     <div class="container">
-        <h2>Checkout</h2>
+      <h2>Secure Checkout</h2>
     </div>
-</div>
+  </div>
 
-<div class="container mt-5 mb-5">
+  <div class="container mt-5 mb-5">
+    <!-- 🔥 PROGRESS BAR -->
+    <div class="mb-5">
+      <div class="d-flex justify-content-between text-center">
+        <div>
+          <div class="badge badge-success p-2">✔</div>
+          <p>Cart</p>
+        </div>
 
-<form method="POST" action="{% url 'checkout' %}" id="checkoutForm">
-{% csrf_token %}
+        <div>
+          <div class="badge badge-success p-2">✔</div>
+          <p>Address</p>
+        </div>
 
-<div class="row">
+        <div>
+          <div class="badge badge-warning p-2">3</div>
+          <p>Payment</p>
+        </div>
 
-    <!-- 🔥 LEFT: BILLING -->
-    <div class="col-lg-7">
+        <div>
+          <div class="badge badge-light p-2">4</div>
+          <p>Done</p>
+        </div>
+      </div>
+      <hr />
+    </div>
 
-        <div class="card shadow-sm p-4 mb-4">
+    <form method="POST" action="{% url 'checkout' %}" id="checkoutForm">
+      {% csrf_token %}
+
+      <div class="row">
+        <!-- 🔥 LEFT SIDE -->
+        <div class="col-lg-7">
+          <!-- BILLING -->
+          <div class="card shadow-lg p-4 mb-4 border-0">
             <h4 class="mb-3">Billing Details</h4>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <input name="first_name" class="form-control" placeholder="First Name" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input name="last_name" class="form-control" placeholder="Last Name" required>
-                </div>
+              <div class="col-md-6 mb-3">
+                <input name="first_name" class="form-control" placeholder="First Name" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <input name="last_name" class="form-control" placeholder="Last Name" required />
+              </div>
             </div>
 
-            <input name="email" class="form-control mb-3" placeholder="Email Address" required>
+            <input name="email" class="form-control mb-3" placeholder="Email Address" required />
 
-            <input name="address" class="form-control mb-3" placeholder="Address" required>
-            <input name="address2" class="form-control mb-3" placeholder="Apartment, suite (optional)">
+            <input name="address" class="form-control mb-3" placeholder="Street Address" required />
+            <input name="address2" class="form-control mb-3" placeholder="Apartment, suite (optional)" />
 
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <input name="country" class="form-control" placeholder="Country" required>
+              <div class="col-md-4 mb-3">
+                <input name="country" class="form-control" placeholder="Country" required />
+              </div>
+              <div class="col-md-4 mb-3">
+                <input name="state" class="form-control" placeholder="State" required />
+              </div>
+              <div class="col-md-4 mb-3">
+                <input name="zip" class="form-control" placeholder="Zip Code" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- PAYMENT -->
+          <div class="card shadow-lg p-4 border-0">
+            <h4 class="mb-3">Payment Method</h4>
+
+            <div class="custom-control custom-radio mb-2">
+              <input type="radio" id="cod" name="paymentMethod" value="cod" class="custom-control-input" checked />
+              <label class="custom-control-label" for="cod">💵 Cash on Delivery</label>
+            </div>
+
+            <div class="custom-control custom-radio mb-2">
+              <input type="radio" id="card" name="paymentMethod" value="card" class="custom-control-input" />
+              <label class="custom-control-label" for="card">💳 Credit / Debit Card</label>
+            </div>
+
+            <div class="custom-control custom-radio">
+              <input type="radio" id="paypal" name="paymentMethod" value="paypal" class="custom-control-input" />
+              <label class="custom-control-label" for="paypal">🅿️ PayPal</label>
+            </div>
+
+            <!-- CARD DETAILS (OPTIONAL UI) -->
+            <div id="cardDetails" style="display:none;" class="mt-3">
+              <input class="form-control mb-2" placeholder="Card Number" />
+              <div class="row">
+                <div class="col-md-6">
+                  <input class="form-control" placeholder="Expiry" />
                 </div>
-                <div class="col-md-4 mb-3">
-                    <input name="state" class="form-control" placeholder="State" required>
+                <div class="col-md-6">
+                  <input class="form-control" placeholder="CVV" />
                 </div>
-                <div class="col-md-4 mb-3">
-                    <input name="zip" class="form-control" placeholder="Zip Code" required>
-                </div>
+              </div>
             </div>
-
-            <hr>
-
-            <h5>Payment Method</h5>
-
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="paymentMethod" value="cod" checked>
-                <label class="form-check-label">Cash on Delivery</label>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="paymentMethod" value="card">
-                <label class="form-check-label">Credit / Debit Card</label>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="paymentMethod" value="paypal">
-                <label class="form-check-label">Paypal</label>
-            </div>
-
+          </div>
         </div>
 
-    </div>
-
-    <!-- 🔥 RIGHT: ORDER SUMMARY -->
-    <div class="col-lg-5">
-
-        <div class="card shadow-sm p-4">
-
+        <!-- 🔥 RIGHT SIDE -->
+        <div class="col-lg-5">
+          <div class="card shadow-lg p-4 border-0">
             <h4 class="mb-3">Order Summary</h4>
 
             {% if cart.items.all %}
-
-                <!-- ITEMS -->
-                {% for item in cart.items.all %}
-                <div class="d-flex mb-2">
-                    <div>
-                        <strong>{{ item.product.name }}</strong><br>
-                        <small>Qty: {{ item.quantity }}</small>
-                    </div>
-                    <div class="ml-auto">
-                        ${{ item.total_price }}
-                    </div>
+              {% for item in cart.items.all %}
+                <div class="d-flex mb-3 align-items-center">
+                  <div>
+                    <strong>{{ item.product.name }}</strong><br />
+                    <small>Qty: {{ item.quantity }}</small>
+                  </div>
+                  <div class="ml-auto font-weight-bold">${{ item.total_price }}</div>
                 </div>
-                {% endfor %}
+              {% endfor %}
 
-                <hr>
+              <hr />
 
-                <!-- CALCULATIONS -->
-                <div class="d-flex">
-                    <span>Subtotal</span>
-                    <span class="ml-auto">$ {{ subtotal }}</span>
-                </div>
+              <div class="d-flex">
+                <span>Subtotal</span>
+                <span class="ml-auto">$ {{ subtotal }}</span>
+              </div>
 
-                <div class="d-flex">
-                    <span>Shipping</span>
-                    <span class="ml-auto text-success">Free</span>
-                </div>
+              <div class="d-flex">
+                <span>Shipping</span>
+                <span class="ml-auto text-success">Free</span>
+              </div>
 
-                <div class="d-flex">
-                    <span>Tax (5%)</span>
-                    <span class="ml-auto">$ {{ subtotal }}</span>
-                </div>
+              <div class="d-flex">
+                <span>Tax (5%)</span>
+                <span class="ml-auto">$ {{ subtotal|floatformat:2 }}</span>
+              </div>
 
-                <hr>
+              <hr />
 
-                <div class="d-flex font-weight-bold">
-                    <span>Total</span>
-                    <span class="ml-auto">$ {{ subtotal }}</span>
-                </div>
+              <div class="d-flex font-weight-bold text-success">
+                <span>Total</span>
+                <span class="ml-auto">$ {{ subtotal }}</span>
+              </div>
 
-                <hr>
+              <hr />
 
-                <!-- 🔥 PLACE ORDER BUTTON -->
-                <button type="submit" id="placeOrderBtn" class="btn btn-success btn-lg btn-block">
-                    🛒 Place Order
-                </button>
+              <!-- TRUST BADGES -->
+              <p class="text-muted small">🔒 Secure checkout | 🚚 Fast delivery | 💯 Trusted service</p>
 
-                <!-- 🔥 LOADING TEXT -->
-                <p id="loadingText" class="text-center mt-2" style="display:none;">
-                    Processing your order...
-                </p>
+              <!-- BUTTON -->
+              <button type="submit" id="placeOrderBtn" class="btn btn-success btn-lg btn-block">🛒 Place Order</button>
 
+              <p id="loadingText" class="text-center mt-2 text-muted" style="display:none;">Processing your order...</p>
             {% else %}
+              <p>Your cart is empty</p>
 
-                <p>Your cart is empty</p>
-
-                <a href="{% url 'shop' %}" class="btn btn-primary btn-block">
-                    Go to Shop
-                </a>
-
+              <a href="{% url 'shop' %}" class="btn btn-primary btn-block">Go to Shop</a>
             {% endif %}
-
+          </div>
         </div>
+      </div>
+    </form>
+  </div>
 
-    </div>
-
-</div>
-
-</form>
-
-</div>
-
-<!-- 🔥 JAVASCRIPT -->
-<script>
-document.getElementById("checkoutForm").addEventListener("submit", function() {
-    let btn = document.getElementById("placeOrderBtn");
-    btn.innerHTML = "Processing...";
-    btn.disabled = true;
-
-    document.getElementById("loadingText").style.display = "block";
-});
-</script>
-
+  <!-- 🔥 JS -->
+  <script>
+    document.getElementById('checkoutForm').addEventListener('submit', function () {
+      let btn = document.getElementById('placeOrderBtn')
+      btn.innerHTML = 'Processing...'
+      btn.disabled = true
+      document.getElementById('loadingText').style.display = 'block'
+    })
+    
+    // SHOW CARD INPUT
+    let cardRadio = document.getElementById('card')
+    let cardBox = document.getElementById('cardDetails')
+    
+    cardRadio.addEventListener('change', function () {
+      cardBox.style.display = 'block'
+    })
+  </script>
 {% endblock %}

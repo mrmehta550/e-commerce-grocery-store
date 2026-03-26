@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView
 from .models import *
+from products.models import Category, Product
 
 
 class HomeView(TemplateView):
@@ -41,6 +42,12 @@ class ContactView(TemplateView):
     
 class GalleryView(TemplateView):
     template_name = 'gallery.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['gallery_items'] = Product.objects.all()
+        context['gallery_categories'] = Category.objects.all()
+        return context
 
 class AccountView(TemplateView):
     template_name = 'my-account.html'

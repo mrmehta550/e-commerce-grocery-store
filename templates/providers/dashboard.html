@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* --- Dashboard Core Styles --- */
+    body { background-color: #f4f7f6; }
+    .dashboard-wrapper { padding: 40px 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    /* Header & Badges */
+    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .dash-title { font-size: 28px; font-weight: 700; color: #333; margin: 0; }
+    .business-badge { background: #b0d12b; color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; vertical-align: middle; margin-left: 10px; }
+    
+    /* Buttons */
+    .btn-add { background-color: #000; color: #fff; padding: 10px 25px; border-radius: 5px; font-weight: 600; text-transform: uppercase; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-decoration: none; display: inline-block; }
+    .btn-add:hover { background-color: #b0d12b; color: #000; text-decoration: none; }
+    .btn-action { padding: 6px 12px; border-radius: 4px; font-size: 13px; transition: all 0.2s; font-weight: 600; text-decoration: none; }
+    .btn-edit { background: #f8f9fa; color: #333; border: 1px solid #ddd; margin-right: 5px; }
+    .btn-edit:hover { background: #e2e6ea; text-decoration: none; color: #000; }
+    .btn-delete { background: #dc3545; color: #fff; border: none; }
+    .btn-delete:hover { background: #c82333; color: #fff; text-decoration: none; }
+    
+    /* Stat Cards */
+    .stat-card { background: #fff; border-radius: 10px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); margin-bottom: 30px; display: flex; align-items: center; transition: transform 0.3s; border-left: 5px solid #b0d12b; }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-icon { font-size: 40px; color: #e0e0e0; margin-right: 20px; }
+    .stat-details h4 { margin: 0; font-size: 14px; color: #777; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+    .stat-details h2 { margin: 5px 0 0; font-size: 32px; font-weight: 700; color: #333; }
+    
+    /* Data Table */
+    .table-wrapper { background: #fff; border-radius: 10px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 50px; }
+    .table-header { background: #000; color: #fff; padding: 20px; font-size: 18px; font-weight: 600; margin: 0; }
+    .pro-table { width: 100%; margin: 0; border-collapse: collapse; }
+    .pro-table th { background-color: #f8f9fa; color: #555; font-weight: 600; text-transform: uppercase; font-size: 13px; padding: 15px 20px; border-bottom: 2px solid #eee; }
+    .pro-table td { padding: 15px 20px; vertical-align: middle; color: #555; border-bottom: 1px solid #eee; }
+    .pro-table tr:last-child td { border-bottom: none; }
+    .pro-table tbody tr:hover { background-color: #fcfcfc; }
+    .price-tag { font-weight: 700; color: #28a745; font-size: 15px; }
+    
+    /* Empty State */
+    .empty-state { text-align: center; padding: 60px 20px; }
+    .empty-icon { font-size: 60px; color: #ddd; margin-bottom: 20px; }
+    .empty-text { font-size: 20px; color: #777; margin-bottom: 10px; font-weight: 600; }
+</style>
+
+<div class="dashboard-wrapper">
+    <div class="container">
+        
+        <div class="dash-header flex-wrap">
+            <div class="mb-3 mb-md-0">
+                <h2 class="dash-title">
+                    Provider Dashboard 
+                    <span class="business-badge"><i class="fas fa-store"></i> {{ provider.business_name }}</span>
+                </h2>
+            </div>
+            <div>
+                <a href="{% url 'add_product' %}" class="btn-add">
+                    <i class="fas fa-plus-circle mr-2"></i> Add New Product
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                    <div class="stat-details">
+                        <h4>Total Inventory</h4>
+                        <h2>{{ products|length }}</h2> 
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card" style="border-left-color: #17a2b8;">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-details">
+                        <h4>Active Listings</h4>
+                        <h2>{{ products|length }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="stat-card" style="border-left-color: #28a745;">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-details">
+                        <h4>Store Status</h4>
+                        <h2>Online</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <h3 class="table-header"><i class="fas fa-list mr-2"></i> Your Product Inventory</h3>
+            <div class="table-responsive">
+                <table class="table pro-table">
+                    {% if products %}
+                        <thead>
+                            <tr>
+                                <th width="5%">#</th>
+                                <th width="45%">Product Name</th>
+                                <th width="15%">Price</th>
+                                <th width="15%">Status</th>
+                                <th width="20%" class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><strong>{{ product.name }}</strong></td>
+                                    <td class="price-tag">₹{{ product.price }}</td>
+                                    <td><span class="badge badge-success px-2 py-1">In Stock</span></td>
+                                    <td class="text-right">
+                                        <a href="#" class="btn-action btn-edit" title="Edit Product">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'delete_product' product.id %}" 
+                                           class="btn-action btn-delete" 
+                                           onclick="return confirm('Are you sure you want to delete {{ product.name|escapejs }}? This action cannot be undone.');"
+                                           title="Delete Product">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    {% else %}
+                        <tbody>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-box-open empty-icon"></i>
+                                        <h4 class="empty-text">Your inventory is currently empty.</h4>
+                                        <p class="text-muted mb-4">Start adding products to your store to see them listed here.</p>
+                                        <a href="{% url 'add_product' %}" class="btn-add">
+                                            <i class="fas fa-plus"></i> Add Your First Product
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

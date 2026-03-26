@@ -1,7 +1,12 @@
 from django.urls import path
-from .views import *
+from . import views
 
 urlpatterns = [
-    path('checkout/', checkout_view, name='checkout'),
-    path('success/', success_view, name='order_success')
+    path('checkout/', views.checkout, name='checkout'),
+    path('success/', views.success_view, name='order_success'),
+    # path('track-order/<int:order_id>/', OrderTrackingView.as_view(), name='order_tracking'),
+    path('tracking/<int:pk>/', views.order_tracking, name='order_tracking'),
+    path('my-orders/', views.my_orders, name='my_orders'),
+    path('status/<int:pk>/', views.order_status_api, name='order_status_api'),
+
 ]

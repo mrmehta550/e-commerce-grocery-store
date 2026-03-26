@@ -1,188 +1,154 @@
-<div class="main-top">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <div class="right-phone-box">
-          <p>
-            Call US :- <a href="#">+11 900 800 100</a>
-          </p>
+<!-- 🔥 AMAZON STYLE NAVBAR -->
+<header class="main-header">
+
+<!-- 🔥 AMAZON STYLE NAVBAR -->
+<header class="main-header">
+
+  <!-- TOP BAR -->
+  <div style="background:#131921; color:white; padding:8px 0;">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+
+      <!-- LOCATION -->
+      <div class="mb-2 mb-md-0">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>
+          Deliver by<br>
+          <strong>Freshshop</strong>
+        </span>
+      </div>
+
+      <!-- SEARCH BAR -->
+      <form method="GET" action="{% url 'shop' %}" style="width:100%; max-width:500px; margin:8px 0;" class="flex-grow-1 mx-3">
+        <div class="input-group">
+
+          <!-- CATEGORY SELECT -->
+          <select name="category" class="form-control d-none d-md-block" style="max-width:150px;">
+            <option value="" {% if not request.GET.category %}selected{% endif %}>All</option>
+            {% for nav_cat in nav_categories %}
+              <option value="{{ nav_cat.category.id }}" {% if request.GET.category == nav_cat.category.id|stringformat:"s" %}selected{% endif %}>{{ nav_cat.category.name }}</option>
+            {% endfor %}
+          </select>
+
+          <!-- SEARCH INPUT -->
+          <input type="text" name="q" class="form-control" placeholder="Search groceries..." value="{{ request.GET.q|default_if_none:'' }}">
+
+          <!-- PASS THROUGH TAG FILTER -->
+          {% if request.GET.tag %}
+            <input type="hidden" name="tag" value="{{ request.GET.tag }}">
+          {% endif %}
+
+          <!-- SEARCH BUTTON -->
+          <div class="input-group-append">
+            <button class="btn btn-warning">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+
         </div>
-        <div class="our-link">
-          <ul>
-            <li>
-              <a href="#"><i class="fa fa-user s_color"></i> My Account</a>
+      </form>
+
+      <!-- USER + CART -->
+      <div class="d-flex align-items-center flex-wrap">
+
+        {% if user.is_authenticated %}
+
+        {% if user.is_authenticated %}
+          <div class="dropdown mr-3">
+            <a class="text-white dropdown-toggle" data-toggle="dropdown">
+              Hello, {{ user.username }}<br>
+              <strong>
+                {% if user.role == 'provider' %}
+                  Provider Panel
+                {% else %}
+                  My Account
+                {% endif %}
+              </strong>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right">
+
+              {% if user.role == 'provider' %}
+                <a class="dropdown-item" href="{% url 'provider_dashboard' %}">Dashboard</a>
+                <a class="dropdown-item" href="#">Manage Products</a>
+                <a class="dropdown-item" href="{% url 'provider_orders' %}">My Orders</a>
+              {% else %}
+                <a class="dropdown-item" href="{% url 'my-account' %}">My Profile</a>
+                <a class="dropdown-item" href="{% url 'cart' %}">My Orders</a>
+              {% endif %}
+
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
+            </div>
+          </div>
+
+        {% else %}
+          <a href="{% url 'login' %}" class="text-white mr-3">
+            Sign In
+          </a>
+        {% endif %}
+
+        <!-- CART -->
+        <a href="{% url 'cart' %}" class="text-white">
+          🛒 Cart
+          <span class="badge badge-warning">{{ cart_count }}</span>
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECOND NAVBAR -->
+  <div style="background:#232f3e;">
+    <div class="container">
+      <nav class="navbar navbar-expand-md navbar-dark p-0">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+
+            <li class="nav-item">
+              <a class="nav-link text-white" href="{% url 'home' %}">Home</a>
             </li>
-            <li>
-              <a href="#"><i class="fas fa-location-arrow"></i> Our location</a>
+
+            <!-- CATEGORY MENU -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown">
+                All Categories
+              </a>
+
+              <div class="dropdown-menu">
+                {% for nav_cat in nav_categories %}
+                  <a class="dropdown-item" href="{% url 'shop' %}?category={{ nav_cat.category.id }}">
+                    {{ nav_cat.category.name }}
+                  </a>
+                {% endfor %}
+              </div>
             </li>
-            <li>
-              <a href="#"><i class="fas fa-headset"></i> Contact Us</a>
+
+            <li class="nav-item">
+              <a class="nav-link text-white" href="{% url 'shop' %}">Shop</a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link text-white" href="{% url 'contact-us' %}">Contact</a>
+            </li>
+
+            <!-- PROVIDER EXTRA MENU -->
+            {% if user.is_authenticated and user.role == 'provider' %}
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'provider_dashboard' %}">Provider Dashboard</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'add_product' %}">Add Product</a>
+              </li>
+            {% endif %}
+
           </ul>
         </div>
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <div class="login-box">
-          <select id="basic" class="selectpicker show-tick form-control text-dark">
-            {% if user.is_authenticated %}
-              <option value="{% url 'logout' %}">Sign Out</option>
-            {% else %}
-              <option value="{% url 'register' %}">Register Here</option>
-              <option value="{% url 'login' %}">Sign In</option>
-            {% endif %}
-          </select>
-        </div>
-        <div class="text-slid-box">
-          <div id="offer-box" class="carouselTicker">
-            <ul class="offer-box">
-              <li>
-                <i class="fab fa-opencart"></i> 20% off Entire Purchase Promo code: offT80
-              </li>
-              <li>
-                <i class="fab fa-opencart"></i> 50% - 80% off on Vegetables
-              </li>
-              <li>
-                <i class="fab fa-opencart"></i> Off 10%! Shop Vegetables
-              </li>
-              <li>
-                <i class="fab fa-opencart"></i> Off 50%! Shop Now
-              </li>
-              <li>
-                <i class="fab fa-opencart"></i> Off 10%! Shop Vegetables
-              </li>
-              <li>
-                <i class="fab fa-opencart"></i> 50% - 80% off on Vegetables
-              </li>
-              <li>
-                <i class="fab fa-opencart"></i> 20% off Entire Purchase Promo code: offT30
-              </li>
-              <li>
-                <i class="fab fa-opencart"></i> Off 50%! Shop Now
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      </nav>
     </div>
   </div>
-</div>
-<!-- End Main Top -->
 
-<!-- Start Main Top -->
-<header class="main-header">
-  <!-- Start Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-default bootsnav">
-    <div class="container">
-      <!-- Start Header Navigation -->
-      <div class="navbar-header">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
-        <a class="navbar-brand" href="index.html"><img src="images/logo.png" class="logo" alt="" /></a>
-      </div>
-      <!-- End Header Navigation -->
-
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="navbar-menu">
-        <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'home' %}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'about' %}">About Us</a>
-          </li>
-          <li class="dropdown">
-            <a href="{% url 'shop' %}" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">SHOP</a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="{% url 'shop' %}">Sidebar Shop</a>
-              </li>
-              <li>
-                <a href="{% url 'shop-detail' %}">Shop Detail</a>
-              </li>
-              <li>
-                <a href="{% url 'cart' %}">Cart</a>
-              </li>
-              <li>
-                <a href="{% url 'checkout' %}">Checkout</a>
-              </li>
-              <li>
-                <a href="{% url 'my-account' %}">My Account</a>
-              </li>
-              <li>
-                <a href="{% url 'wishlist' %}">Wishlist</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'gallery' %}">Gallery</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'contact-us' %}">Contact Us</a>
-          </li>
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
-
-      <!-- Start Atribute Navigation -->
-      <div class="attr-nav">
-        <ul>
-          <li class="search">
-            <a href="{% url 'cart' %}"><i class="fa fa-search"></i></a>
-          </li>
-          <li class="side-menu">
-            <a href="{% url 'cart' %}">
-              <i class="fa fa-shopping-bag"></i>
-              <span class="badge">3</span>
-              <p>My Cart</p>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <!-- End Atribute Navigation -->
-    </div>
-    <div class="side">
-                <a href="#" class="close-side"><i class="fa fa-times"></i></a>
-                <li class="cart-box">
-                    <ul class="cart-list">
-                        <li>
-                            <a href="#" class="photo"><img src="images/img-pro-01.jpg" class="cart-thumb" alt="" /></a>
-                            <h6><a href="#">Delica omtantur </a></h6>
-                            <p>1x - <span class="price">$80.00</span></p>
-                        </li>
-                        <li>
-                            <a href="#" class="photo"><img src="images/img-pro-02.jpg" class="cart-thumb" alt="" /></a>
-                            <h6><a href="#">Omnes ocurreret</a></h6>
-                            <p>1x - <span class="price">$60.00</span></p>
-                        </li>
-                        <li>
-                            <a href="#" class="photo"><img src="images/img-pro-03.jpg" class="cart-thumb" alt="" /></a>
-                            <h6><a href="#">Agam facilisis</a></h6>
-                            <p>1x - <span class="price">$40.00</span></p>
-                        </li>
-                        <li class="total">
-                            <a href="#" class="btn btn-default hvr-hover btn-cart">VIEW CART</a>
-                            <span class="float-right"><strong>Total</strong>: $180.00</span>
-                        </li>
-                    </ul>
-                </li>
-            </div>
-  </nav>
-  <!-- End Navigation -->
 </header>
-<!-- End Main Top -->
-
-<!-- Start Top Search -->
-<div class="top-search">
-  <div class="container">
-    <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-search"></i></span>
-      <input type="text" class="form-control" placeholder="Search" />
-      <span class="input-group-addon close-search"><i class="fa fa-times"></i></span>
-    </div>
-  </div>
-</div>
-
-<script>
-document.getElementById("basic").addEventListener("change", function() {
-    window.location.href = this.value;
-});
-</script>
