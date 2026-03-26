@@ -1,15 +1,12 @@
 <!-- 🔥 AMAZON STYLE NAVBAR -->
 <header class="main-header">
 
-<!-- 🔥 AMAZON STYLE NAVBAR -->
-<header class="main-header">
-
   <!-- TOP BAR -->
   <div style="background:#131921; color:white; padding:8px 0;">
-    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div class="container d-flex justify-content-between align-items-center">
 
       <!-- LOCATION -->
-      <div class="mb-2 mb-md-0">
+      <div>
         <i class="fas fa-map-marker-alt"></i>
         <span>
           Deliver by<br>
@@ -18,11 +15,11 @@
       </div>
 
       <!-- SEARCH BAR -->
-      <form method="GET" action="{% url 'shop' %}" style="width:100%; max-width:500px; margin:8px 0;" class="flex-grow-1 mx-3">
+      <form method="GET" action="{% url 'shop' %}" style="width:50%;">
         <div class="input-group">
 
           <!-- CATEGORY SELECT -->
-          <select name="category" class="form-control d-none d-md-block" style="max-width:150px;">
+          <select name="category" class="form-control" style="max-width:150px;">
             <option value="" {% if not request.GET.category %}selected{% endif %}>All</option>
             {% for nav_cat in nav_categories %}
               <option value="{{ nav_cat.category.id }}" {% if request.GET.category == nav_cat.category.id|stringformat:"s" %}selected{% endif %}>{{ nav_cat.category.name }}</option>
@@ -48,9 +45,7 @@
       </form>
 
       <!-- USER + CART -->
-      <div class="d-flex align-items-center flex-wrap">
-
-        {% if user.is_authenticated %}
+      <div class="d-flex align-items-center">
 
         {% if user.is_authenticated %}
           <div class="dropdown mr-3">
@@ -101,53 +96,46 @@
   <!-- SECOND NAVBAR -->
   <div style="background:#232f3e;">
     <div class="container">
-      <nav class="navbar navbar-expand-md navbar-dark p-0">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+      <ul class="nav">
 
-            <li class="nav-item">
-              <a class="nav-link text-white" href="{% url 'home' %}">Home</a>
-            </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'home' %}">Home</a>
+        </li>
 
-            <!-- CATEGORY MENU -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown">
-                All Categories
+        <!-- CATEGORY MENU -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown">
+            All Categories
+          </a>
+
+          <div class="dropdown-menu">
+            {% for nav_cat in nav_categories %}
+              <a class="dropdown-item" href="{% url 'shop' %}?category={{ nav_cat.category.id }}">
+                {{ nav_cat.category.name }}
               </a>
+            {% endfor %}
+          </div>
+        </li>
 
-              <div class="dropdown-menu">
-                {% for nav_cat in nav_categories %}
-                  <a class="dropdown-item" href="{% url 'shop' %}?category={{ nav_cat.category.id }}">
-                    {{ nav_cat.category.name }}
-                  </a>
-                {% endfor %}
-              </div>
-            </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'shop' %}">Shop</a>
+        </li>
 
-            <li class="nav-item">
-              <a class="nav-link text-white" href="{% url 'shop' %}">Shop</a>
-            </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url 'contact-us' %}">Contact</a>
+        </li>
 
-            <li class="nav-item">
-              <a class="nav-link text-white" href="{% url 'contact-us' %}">Contact</a>
-            </li>
+        <!-- PROVIDER EXTRA MENU -->
+        {% if user.is_authenticated and user.role == 'provider' %}
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'provider_dashboard' %}">Provider Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'add_product' %}">Add Product</a>
+          </li>
+        {% endif %}
 
-            <!-- PROVIDER EXTRA MENU -->
-            {% if user.is_authenticated and user.role == 'provider' %}
-              <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'provider_dashboard' %}">Provider Dashboard</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'add_product' %}">Add Product</a>
-              </li>
-            {% endif %}
-
-          </ul>
-        </div>
-      </nav>
+      </ul>
     </div>
   </div>
 
